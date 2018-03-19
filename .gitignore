@@ -1,0 +1,6 @@
+/.idea/
+/DevServer/
+/tmp/
+/bin/
+*.test
+*.swp
