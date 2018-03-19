@@ -1,7 +1,7 @@
 package n3wb13.gametype.bedwars.listeners.servers;
 
 import n3wb13.gametype.bedwars.events.server.UpdateEvent;
-import n3wb13.gametype.bedwars.listeners.MyListener;
+import n3wb13.gametype.bedwars.managers.listeners.MyListener;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

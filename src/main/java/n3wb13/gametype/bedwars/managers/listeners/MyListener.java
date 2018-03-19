@@ -1,4 +1,4 @@
-package n3wb13.gametype.bedwars.listeners;
+package n3wb13.gametype.bedwars.managers.listeners;
 
 import n3wb13.gametype.bedwars.BedWars;
 

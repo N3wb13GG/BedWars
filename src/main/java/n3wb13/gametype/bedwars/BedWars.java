@@ -1,10 +1,10 @@
 package n3wb13.gametype.bedwars;
 
 import n3wb13.gametype.bedwars.commands.bedwars.BedWarsCommand;
-import n3wb13.gametype.bedwars.listeners.MyListener;
+import n3wb13.gametype.bedwars.managers.listeners.MyListener;
 import n3wb13.gametype.bedwars.managers.players.PlayerManager;
 import n3wb13.gametype.bedwars.managers.teams.TeamManager;
-import n3wb13.gametype.bedwars.utils.ConsoleLog;
+import n3wb13.gametype.bedwars.utils.LogUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandMap;
@@ -74,7 +74,7 @@ public final class BedWars extends JavaPlugin implements Listener {
                 }
             } catch (Exception e) {
                 //ここに入った時点でアウト
-                ConsoleLog.log(ChatColor.RED + "Reflection Error! you should to server restart.");
+                LogUtil.log(ChatColor.RED + "Reflection Error! you should to server restart.");
             }
         }
     }

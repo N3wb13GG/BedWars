@@ -1,7 +1,6 @@
 package n3wb13.gametype.bedwars.listeners.players;
 
-import n3wb13.gametype.bedwars.listeners.MyListener;
-import n3wb13.gametype.bedwars.managers.players.PlayerData;
+import n3wb13.gametype.bedwars.managers.listeners.MyListener;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

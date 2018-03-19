@@ -1,4 +1,4 @@
-package n3wb13.gametype.bedwars.commands;
+package n3wb13.gametype.bedwars.managers.commands;
 
 import n3wb13.gametype.bedwars.BedWars;
 import org.bukkit.command.CommandSender;
@@ -11,15 +11,12 @@ import java.util.Map;
 
 public class MyCommand extends BukkitCommand {
 
-    BedWars bedWars = BedWars.instance;
+    public BedWars bedWars = BedWars.instance;
 
-    public final boolean isSubCommand;
     private Map<String, MyCommand> subCommands = new HashMap<>();
 
-    public MyCommand(String name, boolean isSubCommand) {
+    public MyCommand(String name) {
         super(name);
-
-        this.isSubCommand = isSubCommand;
     }
 
     @Override
