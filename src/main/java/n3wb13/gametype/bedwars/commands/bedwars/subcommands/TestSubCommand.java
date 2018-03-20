@@ -7,10 +7,10 @@ import org.bukkit.command.CommandSender;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TestSubCommand extends BedWarsCommand {
+final public class TestSubCommand extends BedWarsCommand {
 
     public TestSubCommand() {
-        super("test");
+        this.setName("test");
     }
 
     @Override

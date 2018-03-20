@@ -2,7 +2,7 @@ package n3wb13.gametype.bedwars.managers.listeners;
 
 import n3wb13.gametype.bedwars.BedWars;
 
-public interface MyListener {
+public interface IMyListener {
 
-    BedWars bedWars = BedWars.instance;
+    BedWars bedWars = BedWars.getInstance();
 }

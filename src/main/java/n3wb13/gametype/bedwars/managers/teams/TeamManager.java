@@ -1,79 +1,107 @@
 package n3wb13.gametype.bedwars.managers.teams;
 
-import n3wb13.gametype.bedwars.BedWars;
+import n3wb13.gametype.bedwars.managers.IManager;
+import n3wb13.gametype.bedwars.managers.games.EGameProgres;
 import n3wb13.gametype.bedwars.managers.players.PlayerData;
 import org.bukkit.scoreboard.NameTagVisibility;
-import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
-import static org.bukkit.Bukkit.getScoreboardManager;
+public class TeamManager implements IManager {
 
-public class TeamManager {
+    private Map<String, MyTeam> teamList = new HashMap<>();
+    private Map<PlayerData, MyTeam> playerInTeamList = new HashMap<>();
 
-    private HashMap<PlayerData, TeamType> playerInTeamList = new HashMap<>();
-    private HashMap<TeamType, Integer> teamSize = new HashMap<>();
+    public void createTeam() {
+        for (ETeamType teamType : ETeamType.values()) {
+            getTeams().put(teamType.getTeamName(), new MyTeam(teamType.getTeamName(), teamType.getTeamDisplayName(), teamType));
 
-    public TeamManager() {
-        for (TeamType teamType : TeamType.values()) {
-            teamSize.put(teamType, 0);
-
-            Scoreboard board = getScoreboardManager().getMainScoreboard();
-
-            Team team = board.getTeam(teamType.getTeamName());
-            if(team == null)
-                team = board.registerNewTeam(teamType.getTeamName());
+            Team team = scoreBoardManager.getScoreBoard().registerNewTeam(teamType.getTeamName());
 
             team.setDisplayName(teamType.getTeamDisplayName());
             team.setAllowFriendlyFire(false);
             team.setCanSeeFriendlyInvisibles(true);
             team.setNameTagVisibility(NameTagVisibility.HIDE_FOR_OTHER_TEAMS);
-            team.setPrefix(teamType.getTeamDisplayName());
+            team.setPrefix("" + teamType.getTeamColor());
         }
     }
 
-    public TeamType recommentedTeam() {
-        return TeamType.Red;
+    public void removeTeam() {
+        for (ETeamType teamType : ETeamType.values()) {
+        }
     }
 
-    public TeamType getTeam(PlayerData playerData) {
-       if (!playerInTeamList.containsKey(playerData))
-           setTeam(playerData, TeamType.None);
-
-       return playerInTeamList.get(playerData);
+    public void createPlayerTeamData(PlayerData playerData) {
+        if (!playerInTeamList.containsKey(playerData)) {
+            playerInTeamList.put(playerData, getTeams().get(ETeamType.NONE.getTeamName()));
+            getTeams().get(ETeamType.NONE.getTeamName()).joinTeam(playerData);
+            scoreBoardManager.getScoreBoard().getTeam(ETeamType.NONE.getTeamName()).addEntry(playerData.getPlayer().getName());
+        }
     }
 
-    public boolean setTeam(PlayerData playerData, TeamType team) {
+    public void onJoin(PlayerData playerData) {
+        createPlayerTeamData(playerData);
+    }
+
+    public Map<String, MyTeam> getTeams() {
+        return teamList;
+    }
+
+    public ArrayList<String> getTeamNames() {
+        return new ArrayList<>(teamList.keySet());
+    }
+
+    public ETeamType recommentedTeam() {
+        return ETeamType.NONE;
+    }
+
+    public MyTeam getTeam(PlayerData playerData) {
+        return playerInTeamList.get(playerData);
+    }
+
+    public ETeamJoinDetails setTeam(PlayerData playerData, String team) {
+        if (!getTeams().containsKey(team.toLowerCase())) return ETeamJoinDetails.NOT_EXIT;
+        return setTeam(playerData, getTeams().get(team.toLowerCase()));
+    }
+
+    public ETeamJoinDetails setTeam(PlayerData playerData, ETeamType teamType) {
+        if (!getTeams().containsKey(teamType.getTeamName())) return ETeamJoinDetails.NOT_EXIT;
+        return setTeam(playerData, getTeams().get(teamType.getTeamName()));
+    }
+
+    public ETeamJoinDetails setTeam(PlayerData playerData, MyTeam team) {
         int min = 0;
-        for (TeamType teamType : TeamType.values()) {
-            if(team != TeamType.None && min > teamSize.get(teamType))
-                 min = teamSize.get(teamType);
+        for (ETeamType teamType : ETeamType.values()) {
+            if (team.getTeamType() != ETeamType.NONE && min > team.getTeamSize())
+                min = team.getTeamSize();
         }
-        min /= TeamType.values().length -1;
+        min /= ETeamType.values().length - 1;
 
-        if(team != TeamType.None && teamSize.get(team) <= min + 1) {
+        MyTeam playerTeam = getTeam(playerData);
+
+        if (((playerTeam.getTeamType() == ETeamType.NONE || gameManager.getGameProgres() == EGameProgres.WAIT) && team.getTeamType() != ETeamType.NONE && team.getTeamSize() <= min + 1)
+            || (team.getTeamType() == ETeamType.NONE && playerTeam.getTeamType() != ETeamType.NONE && gameManager.getGameProgres() == EGameProgres.WAIT)) {
+            playerTeam.leaveTeam(playerData);
             playerInTeamList.put(playerData, team);
-            Scoreboard board = getScoreboardManager().getMainScoreboard();
-            board.getTeam(team.getTeamName()).addEntry(playerData.getPlayer().getName());
+            team.joinTeam(playerData);
+            scoreBoardManager.getScoreBoard().getTeam(team.getName()).addEntry(playerData.getPlayer().getName());
 
-            return true;
-        } else if(team == TeamType.None) {
-            playerInTeamList.put(playerData, team);
-            Scoreboard board = getScoreboardManager().getMainScoreboard();
-            board.getTeam(team.getTeamName()).addEntry(playerData.getPlayer().getName());
+            return ETeamJoinDetails.TRUE;
+        } else if (gameManager.getGameProgres() != EGameProgres.WAIT)
+            return ETeamJoinDetails.GAME_PROGRES;
+        else if (team.getTeamSize() > min + 1)
+            return ETeamJoinDetails.PLAYER_MANY;
 
-            return true;
-        }
-
-        return false;
+        return ETeamJoinDetails.ERROR;
     }
 
     public void checkResigned() {
-        for(PlayerData playerData : BedWars.instance.playerManager.getPlayerDatas()) {
-            if (!playerData.getPlayer().isOnline() && getTeam(playerData) != TeamType.None && !playerData.getResigned() && playerData.getLogoutTime().hasReached(500L)) {
-                setTeam(playerData, TeamType.None);
+        for (PlayerData playerData : playerManager.getPlayerDatas()) {
+            if (!playerData.getPlayer().isOnline() && getTeam(playerData).getTeamType() != ETeamType.NONE && !playerData.getResigned() && playerData.getLogoutTime().hasReached(500L)) {
+                setTeam(playerData, ETeamType.NONE);
                 playerData.setResigned(true);
             }
         }

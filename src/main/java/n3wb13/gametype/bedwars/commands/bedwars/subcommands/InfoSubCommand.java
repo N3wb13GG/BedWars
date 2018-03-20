@@ -4,15 +4,14 @@ import n3wb13.gametype.bedwars.commands.bedwars.BedWarsCommand;
 import n3wb13.gametype.bedwars.utils.LogUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class InfoSubCommand extends BedWarsCommand {
+final public class InfoSubCommand extends BedWarsCommand {
 
     public InfoSubCommand() {
-        super("info");
+        this.setName("info");
     }
 
     @Override
@@ -26,7 +25,6 @@ public class InfoSubCommand extends BedWarsCommand {
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
-        LogUtil.log(getName() + " SubCommand TabComplete", sender);
         return new ArrayList<>();
     }
 }
