@@ -100,7 +100,7 @@ public class TeamManager implements IManager {
 
     public void checkResigned() {
         for (PlayerData playerData : playerManager.getPlayerDatas()) {
-            if (!playerData.getPlayer().isOnline() && getTeam(playerData).getTeamType() != ETeamType.NONE && !playerData.getResigned() && playerData.getLogoutTime().hasReached(500L)) {
+            if (!playerData.getPlayer().isOnline() && getTeam(playerData).getTeamType() != ETeamType.NONE && !playerData.isResigned() && playerData.getLogoutTime().hasReached(500L)) {
                 setTeam(playerData, ETeamType.NONE);
                 playerData.setResigned(true);
             }

@@ -12,6 +12,6 @@ public class JoinListener implements Listener, IMyListener {
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        bedWars.playerManager.onJoin(player);
+        playerManager.onJoin(player);
     }
 }

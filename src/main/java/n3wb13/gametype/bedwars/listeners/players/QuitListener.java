@@ -12,6 +12,6 @@ public class QuitListener implements Listener, IMyListener {
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
 
-        bedWars.playerManager.onQuit(player);
+        playerManager.onQuit(player);
     }
 }

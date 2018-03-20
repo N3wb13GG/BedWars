@@ -40,7 +40,7 @@ public class PlayerManager implements IManager {
 
         teamManager.onJoin(playerData);
 
-        if (playerData.getResigned()) {
+        if (playerData.isResigned()) {
             playerData.setResigned(false);
             player.sendMessage(ChatColor.GRAY + "You have been removed from the team because you have been logout for long time.");
         }

@@ -3,6 +3,7 @@ package n3wb13.gametype.bedwars.managers.commands;
 import n3wb13.gametype.bedwars.BedWars;
 import n3wb13.gametype.bedwars.managers.games.GameManager;
 import n3wb13.gametype.bedwars.managers.maps.MapManager;
+import n3wb13.gametype.bedwars.managers.maps.edits.MapEditManager;
 import n3wb13.gametype.bedwars.managers.players.PlayerManager;
 import n3wb13.gametype.bedwars.managers.teams.TeamManager;
 import org.bukkit.command.CommandSender;
@@ -19,6 +20,7 @@ public class MyCommand extends BukkitCommand {
 
     public GameManager gameManager = bedWars.gameManager;
     public MapManager mapManager = bedWars.mapManager;
+    public MapEditManager mapEditManager = bedWars.mapEditManager;
     public PlayerManager playerManager = bedWars.playerManager;
     public TeamManager teamManager = bedWars.teamManager;
 

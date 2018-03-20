@@ -10,7 +10,7 @@ public class UpdateListener implements Listener, IMyListener {
     @EventHandler
     public void onUpdate(UpdateEvent event) {
         if(event.getType() == UpdateEvent.Type.PRE) {
-            bedWars.teamManager.checkResigned();
+            teamManager.checkResigned();
         }
     }
 }

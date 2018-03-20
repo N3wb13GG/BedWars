@@ -13,6 +13,8 @@ public class PlayerData {
     private boolean resigned = false;
     private TimeHelper logoutTime = new TimeHelper();
 
+    private boolean editMode = false;
+
     public PlayerData(Player player) {
         this.player = player;
         uuid = player.getUniqueId();
@@ -26,7 +28,7 @@ public class PlayerData {
         return uuid;
     }
 
-    public boolean getResigned() {
+    public boolean isResigned() {
         return  resigned;
     }
 
@@ -36,5 +38,13 @@ public class PlayerData {
 
     public TimeHelper getLogoutTime() {
         return logoutTime;
+    }
+
+    public void setEditMode(boolean editMode) {
+        this.editMode = editMode;
+    }
+
+    public boolean isEditMode() {
+        return editMode;
     }
 }
