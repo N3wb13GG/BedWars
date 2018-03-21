@@ -18,7 +18,7 @@ public class EditSubCommand extends MapSubCommand {
             if (sender instanceof Player) {
                 Player player = (Player) sender;
                 player.teleport(mapManager.getMaps().get(args[2]).getWorld().getSpawnLocation());
-                mapEditManager.onEdit(playerManager.getPlayerData(player));
+                itemManager.onEdit(playerManager.getPlayerData(player));
             }
 
         return true;

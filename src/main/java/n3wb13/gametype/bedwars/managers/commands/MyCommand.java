@@ -2,8 +2,8 @@ package n3wb13.gametype.bedwars.managers.commands;
 
 import n3wb13.gametype.bedwars.BedWars;
 import n3wb13.gametype.bedwars.managers.games.GameManager;
+import n3wb13.gametype.bedwars.managers.items.ItemManager;
 import n3wb13.gametype.bedwars.managers.maps.MapManager;
-import n3wb13.gametype.bedwars.managers.maps.edits.MapEditManager;
 import n3wb13.gametype.bedwars.managers.players.PlayerManager;
 import n3wb13.gametype.bedwars.managers.teams.TeamManager;
 import org.bukkit.command.CommandSender;
@@ -16,13 +16,13 @@ import java.util.Map;
 
 public class MyCommand extends BukkitCommand {
 
-    public BedWars bedWars = BedWars.getInstance();
+    protected BedWars bedWars = BedWars.getInstance();
 
-    public GameManager gameManager = bedWars.gameManager;
-    public MapManager mapManager = bedWars.mapManager;
-    public MapEditManager mapEditManager = bedWars.mapEditManager;
-    public PlayerManager playerManager = bedWars.playerManager;
-    public TeamManager teamManager = bedWars.teamManager;
+    protected GameManager gameManager = bedWars.gameManager;
+    protected MapManager mapManager = bedWars.mapManager;
+    protected ItemManager itemManager = bedWars.itemManager;
+    protected PlayerManager playerManager = bedWars.playerManager;
+    protected TeamManager teamManager = bedWars.teamManager;
 
     private Map<String, MyCommand> subCommands = new HashMap<>();
 
