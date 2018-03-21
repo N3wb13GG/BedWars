@@ -3,7 +3,6 @@ package n3wb13.gametype.bedwars.commands.teams.subcommands;
 import n3wb13.gametype.bedwars.commands.teams.TeamCommand;
 import n3wb13.gametype.bedwars.managers.players.PlayerData;
 import n3wb13.gametype.bedwars.managers.teams.ETeamJoinDetails;
-import n3wb13.gametype.bedwars.managers.teams.ETeamType;
 import n3wb13.gametype.bedwars.managers.teams.MyTeam;
 import n3wb13.gametype.bedwars.utils.LogUtil;
 import org.bukkit.command.CommandSender;
@@ -49,9 +48,6 @@ final public class JoinSubCommand extends TeamCommand {
     }
 
     private ArrayList<String> removeNone(Map<String, MyTeam> teamType) {
-        Map<String, MyTeam> teams = teamType;
-        teams.remove(ETeamType.NONE.getTeamName());
-
-        return new ArrayList<>(teams.keySet());
+        return new ArrayList<>(teamType.keySet());
     }
 }

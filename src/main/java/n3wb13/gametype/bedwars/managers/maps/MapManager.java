@@ -44,11 +44,8 @@ public class MapManager implements IManager {
             Location tempLoc = new Location(Bukkit.getWorld(name), 0, 0, 0, 0, 0);
             for (ETeamType teamType : ETeamType.values()) {
                 if (teamType != ETeamType.NONE) {
-                    tempConfig.getConfig().set(teamType.getTeamName() + ".bedpos.1", tempLoc.getX() + ", " + tempLoc.getY() + ", " + tempLoc.getX() + ", " + tempLoc.getYaw() + ", " + tempLoc.getPitch());
-                    tempConfig.getConfig().set(teamType.getTeamName() + ".bedpos.2", tempLoc.getX() + ", " + tempLoc.getY() + ", " + tempLoc.getX() + ", " + tempLoc.getYaw() + ", " + tempLoc.getPitch());
+                    tempConfig.getConfig().set(teamType.getTeamName() + ".bedpos", tempLoc.getX() + ", " + tempLoc.getY() + ", " + tempLoc.getX());
                     tempConfig.getConfig().set(teamType.getTeamName() + ".spawnpos.1", tempLoc.getX() + ", " + tempLoc.getY() + ", " + tempLoc.getX() + ", " + tempLoc.getYaw() + ", " + tempLoc.getPitch());
-                    tempConfig.getConfig().set(teamType.getTeamName() + ".spawnpos.2", tempLoc.getX() + ", " + tempLoc.getY() + ", " + tempLoc.getX() + ", " + tempLoc.getYaw() + ", " + tempLoc.getPitch());
-                    tempConfig.getConfig().set(teamType.getTeamName() + ".spawnpos.3", tempLoc.getX() + ", " + tempLoc.getY() + ", " + tempLoc.getX() + ", " + tempLoc.getYaw() + ", " + tempLoc.getPitch());
                 }
             }
 
@@ -68,6 +65,10 @@ public class MapManager implements IManager {
 
     public Map<String, MyMap> getMaps() {
         return mapList;
+    }
+
+    public MyMap getMap(String name) {
+        return mapList.get(name);
     }
 
     public ArrayList<String> getMapNames() {

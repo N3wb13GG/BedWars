@@ -242,7 +242,7 @@ public class ProxyFactory
     public static volatile boolean useWriteReplace = true;
 
     /*
-     * methods allowing individual factory settings for factoryUseCache and factoryWriteReplace to be reset
+     * methods allowing individual factory mapsettings for factoryUseCache and factoryWriteReplace to be reset
      */
 
     /**

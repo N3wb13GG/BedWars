@@ -14,6 +14,7 @@ public class PlayerData {
     private TimeHelper logoutTime = new TimeHelper();
 
     private boolean editMode = false;
+    private String editingWorld;
 
     public PlayerData(Player player) {
         this.player = player;
@@ -46,5 +47,13 @@ public class PlayerData {
 
     public boolean isEditMode() {
         return editMode;
+    }
+
+    public String getEditingWorld() {
+        return editingWorld;
+    }
+
+    public void setEditingWorld(String editingWorld) {
+        this.editingWorld = editingWorld;
     }
 }

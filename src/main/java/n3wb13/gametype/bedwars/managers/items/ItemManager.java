@@ -1,109 +1,98 @@
 package n3wb13.gametype.bedwars.managers.items;
 
+import n3wb13.gametype.bedwars.BedWars;
 import n3wb13.gametype.bedwars.managers.IManager;
-import n3wb13.gametype.bedwars.managers.players.PlayerData;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
+import n3wb13.gametype.bedwars.utils.LogUtil;
+import org.bukkit.ChatColor;
+import org.bukkit.event.entity.ItemSpawnEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.reflections.Reflections;
+import org.reflections.scanners.ResourcesScanner;
+import org.reflections.scanners.SubTypesScanner;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
+import org.reflections.util.FilterBuilder;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class ItemManager implements IManager {
 
+    private Map<String, MyItem> myItems = new HashMap<>();
     private Map<ItemMeta, MyItem> myItemMetas = new HashMap<>();
-    private Map<EMyItem, MyItem> myItems = new HashMap<>();
-    private Map<Inventory, MyItem> myGuis = new HashMap<>();
 
-    public void registerSettingItems() {
-        for (EMyItem settingItem : EMyItem.values()) {
-            MyItem myItem = new MyItem(settingItem);
-            myItemMetas.put(myItem.getItemStack().getItemMeta(), myItem);
-            myItems.put(settingItem, myItem);
-            myGuis.put(myItem.getMyGui().getInventory(), myItem);
-        }
-    }
+    public void registerItems() {
+        List<ClassLoader> classLoadersList = new LinkedList<ClassLoader>();
+        classLoadersList.add(ClasspathHelper.contextClassLoader());
+        classLoadersList.add(ClasspathHelper.staticClassLoader());
 
-    private EMyItem getSettingItem(ItemStack item) {
-        if (item != null) {
-            if (myItemMetas.containsKey(item.getItemMeta())) {
-                return myItemMetas.get(item.getItemMeta()).getEMyItem();
+        Reflections reflections = new Reflections(new ConfigurationBuilder()
+            .setScanners(new SubTypesScanner(false), new ResourcesScanner())
+            .setUrls(ClasspathHelper.forClassLoader(classLoadersList.toArray(new ClassLoader[0])))
+            .filterInputsBy(new FilterBuilder().include(FilterBuilder.prefix(bedWars.getClass().getPackage().getName()))));
+        Set list = reflections.getSubTypesOf(MyItem.class);
+
+        for (Object obj : list) {
+            Class objClass = (Class) obj;
+            try {
+                if (objClass != BedWars.class) {
+                    MyItem myItem = (MyItem) objClass.newInstance();
+
+                    myItems.put(myItem.getName(), myItem);
+                    myItemMetas.put(myItem.getItemStack().getItemMeta(), myItem);
+                }
+            } catch (Exception e) {
+                //ここに入った時点でアウト
+                LogUtil.log(ChatColor.RED + "Reflection Error! you should to server restart.");
             }
         }
-
-        return null;
     }
 
-    public void onEdit(PlayerData playerData) {
-        playerData.setEditMode(true);
+    public Map<String, MyItem> getMyItems() {
+        return myItems;
+    }
 
-        playerData.getPlayer().setGameMode(GameMode.CREATIVE);
-        playerData.getPlayer().getInventory().clear();
-        for (MyItem myItem : myItems.values()) {
-            playerData.getPlayer().getInventory().setItem(myItem.getSlot(), myItem.getItemStack());
+    public MyItem getMyItem(String name) {
+        return myItems.get(name.toLowerCase());
+    }
+
+    public void onInventoryClick(InventoryClickEvent event) {
+        MyItem myItem = null;
+        if (event.getCurrentItem() != null && myItemMetas.containsKey(event.getCurrentItem().getItemMeta()))
+            myItem = myItemMetas.get(event.getCurrentItem().getItemMeta());
+        else if (event.getCursor() != null && myItemMetas.containsKey(event.getCursor().getItemMeta()))
+            myItem = myItemMetas.get(event.getCursor().getItemMeta());
+
+        if (myItem != null)
+            myItem.onInventoryClick(event);
+    }
+
+    public void onDrop(PlayerDropItemEvent event) {
+        ItemMeta itemMeta = event.getItemDrop().getItemStack().getItemMeta();
+        if (myItemMetas.containsKey(itemMeta)) {
+            MyItem myItem = myItemMetas.get(itemMeta);
+
+            myItem.onDrop(event);
         }
     }
 
-    public void onExitEdit(PlayerData playerData) {
-        playerData.setEditMode(false);
+    public void onItemSpawn(ItemSpawnEvent event) {
+        ItemMeta itemMeta = event.getEntity().getItemStack().getItemMeta();
+        if (myItemMetas.containsKey(itemMeta)) {
+            MyItem myItem = myItemMetas.get(itemMeta);
 
-        playerData.getPlayer().getInventory().clear();
-        playerData.getPlayer().teleport(Bukkit.getWorlds().get(0).getSpawnLocation());
+            myItem.onItemSpawn(event);
+        }
     }
 
-    public boolean onInventoryClick(PlayerData playerData, ItemStack currentItem, ItemStack cursorItem) {
-        if (playerData.isEditMode()) {
-            EMyItem temp = getSettingItem(currentItem);
-            EMyItem myItem = temp != null ? temp : getSettingItem(cursorItem);
+    public void onItemUse(PlayerInteractEvent event) {
+        ItemMeta itemMeta = event.getItem().getItemMeta();
+        if (myItemMetas.containsKey(itemMeta)) {
+            MyItem myItem = myItemMetas.get(itemMeta);
 
-            if (myItem != null) {
-                playerData.getPlayer().updateInventory();
-                playerData.getPlayer().setItemOnCursor(new ItemStack(Material.AIR));
-
-                return true;
-            }
+            myItem.onItemUse(event);
         }
-
-        return false;
-    }
-
-    public boolean onDrop(PlayerData playerData, ItemStack item) {
-        if (playerData.isEditMode()) {
-            EMyItem myItem = getSettingItem(item);
-            if (myItem != null) {
-                playerData.getPlayer().updateInventory();
-                playerData.getPlayer().getInventory().setItem(myItems.get(myItem).getSlot(), myItems.get(myItem).getItemStack());
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public boolean onItemUse(PlayerData playerData, ItemStack item, Block clickedBlock) {
-        if (playerData.isEditMode()) {
-            EMyItem myItem = getSettingItem(item);
-            if (myItem != null) {
-                if (myItem == EMyItem.EXIT) onExitEdit(playerData);
-                else playerData.getPlayer().openInventory(myItems.get(myItem).getMyGui().getInventory());
-
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public boolean onItemSpawn(ItemStack itemStack) {
-        EMyItem settingItem = getSettingItem(itemStack);
-        if (settingItem != null) {
-            return true;
-        }
-
-        return false;
     }
 }

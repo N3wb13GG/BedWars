@@ -1,49 +1,52 @@
 package n3wb13.gametype.bedwars.managers.items;
 
-import n3wb13.gametype.bedwars.guis.MyGui;
-import org.bukkit.inventory.Inventory;
+import n3wb13.gametype.bedwars.BedWars;
+import n3wb13.gametype.bedwars.managers.guis.GuiManager;
+import org.bukkit.event.entity.ItemSpawnEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 public class MyItem {
 
-    private final int slot;
-    private final ItemStack settingItem;
-    private final EMyItem eMyItem;
+    protected BedWars bedWars = BedWars.getInstance();
 
-    private MyGui myGui = new MyGui();
+    protected GuiManager guiManager = bedWars.guiManager;
 
-    public MyItem(EMyItem eMyItem) {
-        this.eMyItem = eMyItem;
-        slot = eMyItem.getSlot();
-        settingItem = new ItemStack(eMyItem.getMaterial());
-        ItemMeta meta = settingItem.getItemMeta();
-        meta.setDisplayName(eMyItem.getName());
-        meta.setLore(eMyItem.getLore());
-        settingItem.setItemMeta(meta);
+    private final String name;
 
-        myGui = eMyItem.getMyGui();
+    private ItemStack itemStack;
+
+    public MyItem(String name) {
+        this.name = name;
     }
 
-    public int getSlot() {
-        return slot;
+    public String getName() {
+        return name;
     }
 
     public ItemStack getItemStack() {
-        return settingItem;
+        return itemStack;
     }
 
-    public EMyItem getEMyItem() {
-        return eMyItem;
+    protected void setItemStack(ItemStack itemStack) {
+        this.itemStack = itemStack;
     }
 
-    public MyGui getMyGui() {
-        return myGui;
+    public void onItemUse(PlayerInteractEvent event) {
+        return;
     }
 
-    protected Inventory inventory;
+    public void onDrop(PlayerDropItemEvent event) {
+        return;
+    }
 
-    public Inventory getInventory() {
-        return inventory;
+    public void onItemSpawn(ItemSpawnEvent event) {
+        return;
+    }
+
+    public void onInventoryClick(InventoryClickEvent event) {
+        return;
     }
 }

@@ -9,6 +9,6 @@ public class ItemSpawnListener implements Listener, IMyListener {
 
     @EventHandler
     public void onItemSpawn(ItemSpawnEvent event) {
-        event.setCancelled(mapEditManager.onItemSpawn(event.getEntity().getItemStack()));
+        itemManager.onItemSpawn(event);
     }
 }
